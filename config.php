@@ -1,12 +1,15 @@
 <?php
-$servername = "127.0.0.1";
-$username = "root";
-$password = "";
-$database = "cricket_jersey_shop";
+$host = getenv('DB_HOST');
+$user = getenv('DB_USER');
+$pass = getenv('DB_PASS');
+$dbname = getenv('DB_NAME');
+$port = getenv('DB_PORT');
 
-$conn = new mysqli($servername, $username, $password, $database);
+$conn = new mysqli($host, $user, $pass, $dbname, $port);
 
 if ($conn->connect_error) {
-    die("Database Connection Failed: " . $conn->connect_error);
+    die("❌ Database Connection Failed: " . $conn->connect_error);
+} else {
+    echo "✅ Database Connected Successfully!";
 }
 ?>
