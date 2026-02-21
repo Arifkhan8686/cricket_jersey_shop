@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>🏏 3D क्रिकेट जर्सी डिज़ाइनर</title>
+<style>
+  :root{
+    --card-w: 380px;
+    --card-h: 420px;
+  }
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    background: linear-gradient(180deg,#0ea5ff 0%, #60a5fa 50%, #e6f6ff 100%);
+    font-family: "Noto Sans", Arial, sans-serif;
+    color:#06325a;
+  }
+
+  h1{
+    margin:22px 0 8px;
+    color:#03396b;
+    text-align:center;
+  }
+
+  .viewer-wrap{
+    width:var(--card-w);
+    max-width:92vw;
+    position:relative;
+    border-radius:14px;
+    overflow:visible;
+    margin:6px 0 18px;
+  }
+
+  .sketchfab-embed {
+    width:100%;
+    height:var(--card-h);
+    border-radius:12px;
+    box-shadow: 0 10px 30px rgba(3,37,65,0.12);
+    overflow:hidden;
+    background:#111;
+  }
+  .sketchfab-embed iframe{
+    width:100%;
+    height:100%;
+    border:0;
+    display:block;
+  }
+
+  .chest-mask{
+    position:absolute;
+    left:50%;
+    top:40%;
+    transform:translateX(-50%);
+    width:52%;
+    height:18%;
+    border-radius:8px;
+    background: linear-gradient(180deg, rgba(230,240,255,0.95), rgba(255,255,255,0.96));
+    pointer-events:none;
+    mix-blend-mode: normal;
+    box-shadow: 0 4px 10px rgba(2, 6, 23, 0.06);
+  }
+
+  .overlay-text {
+    position:absolute;
+    left:50%;
+    top:46%;
+    transform:translate(-50%,-50%);
+    width:70%;
+    text-align:center;
+    pointer-events:none;
+    user-select:none;
+  }
+  .overlay-team{
+    font-weight:700;
+    font-size:16px;
+    color:#ffffff;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    letter-spacing:0.6px;
+  }
+  .overlay-player{
+    margin-top:6px;
+    font-weight:700;
+    font-size:26px;
+    color:#ffffff;
+    text-shadow: 0 3px 8px rgba(0,0,0,0.65);
+  }
+  .overlay-size{
+    margin-top:8px;
+    font-size:12px;
+    color:rgba(255,255,255,0.85);
+  }
+
+  .form-box{
+    width:var(--card-w);
+    max-width:92vw;
+    background:rgba(255,255,255,0.96);
+    border-radius:12px;
+    padding:14px;
+    box-shadow: 0 14px 30px rgba(3,37,65,0.06);
+    margin-bottom:30px;
+  }
+  .form-row { margin-bottom:10px; }
+  input[type="text"], input[type="number"], select {
+    width:100%;
+    padding:10px 12px;
+    border-radius:8px;
+    border: 1px solid #d0e6ff;
+    background: #f7fbff;
+    font-size:15px;
+    box-sizing:border-box;
+  }
+  .btn-row {
+    display:flex;
+    gap:10px;
+    margin-top:8px;
+  }
+  button {
+    flex:1;
+    padding:10px 12px;
+    border-radius:8px;
+    border:0;
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+    font-size:15px;
+  }
+  .btn-apply { background: linear-gradient(90deg,#0b65d3,#0066cc); box-shadow:0 6px 18px rgba(3,37,65,0.12); }
+  .btn-confirm { background: linear-gradient(90deg,#06b06a,#019e64); box-shadow:0 6px 18px rgba(3,37,65,0.08); }
+
+  .toast{
+    position:fixed;
+    right:18px;
+    bottom:18px;
+    background:#052b3c;
+    color:#fff;
+    padding:10px 14px;
+    border-radius:8px;
+    box-shadow:0 6px 20px rgba(2,6,23,0.4);
+    transform:translateY(20px);
+    opacity:0;
+    pointer-events:none;
+    transition: all .35s ease;
+  }
+  .toast.show{ opacity:1; transform:translateY(0); pointer-events:auto; }
+
+  @media (max-width:420px){
+    :root{ --card-w: 340px; --card-h:420px; }
+    .overlay-player{ font-size:22px; }
+  }
+</style>
+</head>
+<body>
+
+  <h1>🏏 क्रिकेट जर्सी डिज़ाइनर (3D)</h1>
+
+  <div class="viewer-wrap">
+    <div class="sketchfab-embed" id="skfb">
+      <iframe
+        title="Sri Lanka Cricket T-shirt"
+        allow="autoplay; fullscreen; xr-spatial-tracking"
+        src="https://sketchfab.com/models/fb244c7664c84e9a88e8c31cc8e83fc7/embed"
+      ></iframe>
+    </div>
+
+    <div class="chest-mask" aria-hidden="true"></div>
+
+    <div class="overlay-text" id="overlay">
+      <div class="overlay-team" id="overlayTeam">TEAM</div>
+      <div class="overlay-player" id="overlayPlayer">00</div>
+      <div class="overlay-size" id="overlaySize">Size: M</div>
+    </div>
+  </div>
+
+  <div class="form-box">
+    <div class="form-row">
+      <input id="teamInput" type="text" placeholder="टीम का नाम दर्ज करें (जैसे: skp)" value="skp">
+    </div>
+    <div class="form-row">
+      <input id="playerInput" type="text" placeholder="खिलाड़ी का नाम दर्ज करें (उदा. ARIF)" value="ARIF">
+    </div>
+    <div class="form-row">
+      <input id="numberInput" type="number" placeholder="जर्सी नंबर" value="77" min="0" max="99">
+    </div>
+    <div class="form-row">
+      <select id="sizeInput">
+        <option value="M">Medium (M)</option>
+        <option value="L">Large (L)</option>
+        <option value="XL">XL</option>
+        <option value="S">Small (S)</option>
+      </select>
+    </div>
+
+    <div class="btn-row">
+      <button id="applyBtn" class="btn-apply">🎨 Apply Design</button>
+      <button id="confirmBtn" class="btn-confirm">✅ Confirm & Pay</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Applied — preview updated</div>
+
+<script>
+  const overlayTeam = document.getElementById('overlayTeam');
+  const overlayPlayer = document.getElementById('overlayPlayer');
+  const overlaySize = document.getElementById('overlaySize');
+
+  const teamInput = document.getElementById('teamInput');
+  const playerInput = document.getElementById('playerInput');
+  const numberInput = document.getElementById('numberInput');
+  const sizeInput = document.getElementById('sizeInput');
+
+  const applyBtn = document.getElementById('applyBtn');
+  const confirmBtn = document.getElementById('confirmBtn');
+  const toast = document.getElementById('toast');
+
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(()=> toast.classList.remove('show'), 2200);
+  }
+
+  function updateOverlay(){
+    const team = (teamInput.value || 'TEAM').toUpperCase();
+    const player = (playerInput.value || '').toUpperCase();
+    const num = (numberInput.value || '').toString().padStart(2,'0');
+    const size = sizeInput.value || 'M';
+
+    overlayTeam.textContent = team;
+    overlayPlayer.textContent = player ? player : num;
+    overlaySize.textContent = 'Size: ' + size;
+  }
+
+  applyBtn.addEventListener('click', function(){
+    updateOverlay();
+    showToast('डिज़ाइन लागू कर दिया गया — preview अपडेट हो गया');
+  });
+
+  confirmBtn.addEventListener('click', function(){
+    const team = encodeURIComponent(teamInput.value || '');
+    const player = encodeURIComponent(playerInput.value || '');
+    const number = encodeURIComponent(numberInput.value || '');
+    const size = encodeURIComponent(sizeInput.value || '');
+    const url = `payment.php?team=${team}&player=${player}&number=${number}&size=${size}`;
+    window.location.href = url;
+  });
+
+  updateOverlay();
+</script>
+
+</body>
+</html>
