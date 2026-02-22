@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://cricket-jersey-shop.onrender.com/sitemap.xml
