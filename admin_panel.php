@@ -1,117 +1,64 @@
 <?php
+include 'db_connect.php';
 session_start();
-include('config.php');
-
-// 🔒 Login check — अगर login नहीं किया है तो redirect
-if (!isset($_SESSION['logged_in'])) {
-    header("Location: admin_login.html");
+if (!isset($_SESSION['admin'])) {
+    header("Location: admin_login.php");
     exit;
 }
 
-// 🗑️ Delete order if requested
-if (isset($_GET['delete'])) {
-    $id = intval($_GET['delete']);
-    $conn->query("DELETE FROM orders WHERE id=$id");
-}
-
-// 📋 Fetch all orders
-$result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
+$sql = "SELECT * FROM orders ORDER BY id DESC";
+$result = $conn->query($sql);
 ?>
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>📋 ऑर्डर मैनेजमेंट पैनल</title>
+<title>ऑर्डर मैनेजमेंट पैनल</title>
 <style>
-body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(180deg, #e3f2fd, #bbdefb);
-    text-align: center;
-    margin: 20px;
-}
-h1 {
-    color: #0d47a1;
-    margin-bottom: 20px;
-}
-.links a {
-    text-decoration: none;
-    color: #1565c0;
-    font-weight: 600;
-    margin: 0 8px;
-}
-.links a:hover {
-    color: #0047a1;
-}
-table {
-    width: 95%;
-    margin: 20px auto;
-    border-collapse: collapse;
-    background: #fff;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    border-radius: 10px;
-    overflow: hidden;
-}
-th, td {
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-    padding: 10px;
-}
-th {
-    background-color: #1976d2;
-    color: white;
-    font-weight: 600;
-}
-tr:hover {
-    background-color: #f1f8ff;
-}
-.delete-btn {
-    color: #d32f2f;
-    text-decoration: none;
-    font-weight: 600;
-}
-.delete-btn:hover {
-    color: #b71c1c;
-}
+  body { font-family: Arial; background: #e9f4ff; text-align: center; }
+  table { margin: 20px auto; border-collapse: collapse; width: 90%; background: white; border-radius: 8px; overflow: hidden; }
+  th, td { padding: 10px; border: 1px solid #ccc; }
+  th { background: #007bff; color: white; }
+  .delete { color: red; text-decoration: none; font-weight: bold; }
 </style>
 </head>
 <body>
-
-<h1>📋 ऑर्डर मैनेजमेंट पैनल</h1>
-
-<div class="links">
-    <a href="add_order.php">➕ नया ऑर्डर जोड़ें</a> |
-    <a href="logout.php">🚪 लॉगआउट करें</a>
-</div>
-
+<h2>📋 ऑर्डर मैनेजमेंट पैनल</h2>
+<a href="logout.php">🔐 लॉगआउट करें</a>
 <table>
 <tr>
-    <th>ID</th>
-    <th>नाम</th>
-    <th>नंबर</th>
-    <th>पता</th>
-    <th>टीम</th>
-    <th>खिलाड़ी</th>
-    <th>जर्सी नंबर</th>
-    <th>आकार</th>
-    <th>डिलीट</th>
+  <th>ID</th>
+  <th>नाम</th>
+  <th>नंबर</th>
+  <th>पता</th>
+  <th>टीम</th>
+  <th>खिलाड़ी</th>
+  <th>जर्सी नंबर</th>
+  <th>आकार</th>
+  <th>डिलीट</th>
 </tr>
 
-<?php while ($row = $result->fetch_assoc()) { ?>
-<tr>
-  <td><?= htmlspecialchars($row['id'] ?? '') ?></td>
-  <td><?= htmlspecialchars($row['name'] ?? '') ?></td>
-  <td><?= htmlspecialchars($row['phone'] ?? '') ?></td>
-  <td><?= htmlspecialchars($row['address'] ?? '') ?></td>
-  <td><?= htmlspecialchars($row['team'] ?? '') ?></td>
-  <td><?= htmlspecialchars($row['player'] ?? '') ?></td>
-  <td><?= htmlspecialchars($row['number'] ?? '') ?></td>
-  <td><?= htmlspecialchars($row['size'] ?? '') ?></td>
-  <td><a class="delete-btn" href="?delete=<?= $row['id'] ?>">❌ Delete</a></td>
-</tr>
-<?php } ?>
-
+<?php
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        echo "<tr>
+        <td>{$row['id']}</td>
+        <td>{$row['name']}</td>
+        <td>{$row['phone']}</td>
+        <td>{$row['address']}</td>
+        <td>{$row['team']}</td>
+        <td>{$row['player']}</td>
+        <td>{$row['number']}</td>
+        <td>{$row['size']}</td>
+        <td><a class='delete' href='delete_order.php?id={$row['id']}'>❌ Delete</a></td>
+        </tr>";
+    }
+} else {
+    echo "<tr><td colspan='9'>⚠️ कोई ऑर्डर नहीं मिला</td></tr>";
+}
+$conn->close();
+?>
 </table>
-
 </body>
 </html>
