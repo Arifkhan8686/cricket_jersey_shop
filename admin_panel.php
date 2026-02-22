@@ -2,6 +2,16 @@
 session_start();
 include('config.php');
 
+if (!isset($_SESSION['logged_in'])) {
+    header("Location: admin_login.html");
+    exit;
+}
+?>
+
+<?php
+session_start();
+include('config.php');
+
 // अगर login नहीं है तो redirect
 if (!isset($_SESSION['logged_in'])) {
     header("Location: admin_login.html");
